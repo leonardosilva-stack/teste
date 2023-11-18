@@ -33,23 +33,9 @@ jobs:
 
       - name: Deploy to production branch
         run: |
-          # Verificar se a branch "production" já existe
-          if git show-ref --verify --quiet refs/heads/production; then
-            git checkout production
-            git pull origin production  # Atualizar os arquivos
-          else
-            git checkout -b production
-          fi
-
-          # Limpar a branch antes de mover os arquivos
+          git checkout -b production
           git rm -r .
-
-          # Mover os arquivos da pasta dist para a raiz do repositório
           mv dist/* .
-
-          # Adicionar e fazer commit das mudanças
           git add .
           git commit -m "Deploy to production"
-
-          # Push para a branch "production"
           git push origin production
