@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout and Build
+        uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Check Password and Deploy
+        run: |
+          if [ "${{ secrets.DEPLOY_PASSWORD }}" = "cafe" ]; then
+            echo "Deploying to production branch"
+            git checkout -b production
+            git push origin production
+          elif [ "${{ secrets.DEPLOY_PASSWORD }}" = "milkshake" ]; then
+            echo "Deploying to stage branch"
+            git checkout -b stage
+            git push origin stage
+          else
+            echo "Senha incorreta. Bloqueando por 20 minutos."
+            sleep 1200  # 20 minutos em segundos
+          fi
