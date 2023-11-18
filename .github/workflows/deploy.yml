@@ -31,6 +31,6 @@ jobs:
           git checkout -b production
           mkdir dist
           # Add any necessary build steps here if needed
-          git add dist/
+          git add -f dist/
           git commit -m "Create production branch and add dist folder"
           git push origin production
