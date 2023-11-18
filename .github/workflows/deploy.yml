@@ -1,47 +1,39 @@
-name: Deploy
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - main
+      - main # ou a branch principal do seu repositório
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout and Build
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node
-        uses: actions/setup-node@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 17.9.0
 
-      - name: Install and Build
-        run: |
-          npm install
-          npm run build
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Sync with Main Branch
-        run: |
-          git checkout main
-          git pull origin main
+      - name: Build
+        run: npm run build
 
-      - name: Check if Production Branch Exists
+      - name: Check if production branch exists
         run: |
-          if git rev-parse --verify production; then
-            git branch -D production  # Exclui a branch localmente
+          git fetch origin production || true
+          if git show-ref --verify --quiet "refs/remotes/origin/production"; then
+            git branch -D production
           fi
-
-      - name: Create and Push Production Branch
-        run: |
           git checkout -b production
-          git push -f origin production  # Força o push da nova branch
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.MY_TOKEN }} # Renomeie sua secret para um nome que não comece com "GITHUB_"
-          publish_dir: ./dist
-          target_branch: production # Modifique para o nome da branch desejada
+      - name: Commit and push to production branch
+        run: |
+          git add dist -f
+          git commit -m "Deploy to production"
+          git push origin production
