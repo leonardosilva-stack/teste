@@ -24,16 +24,20 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Check if production branch exists
-        run: |
-          git fetch origin production || true
-          if git show-ref --verify --quiet "refs/remotes/origin/production"; then
-            git branch -D production
-          fi
-          git checkout -b production
+      - name: Check if production branch exists locally
+        run: git show-ref --verify --quiet "refs/heads/production" || git branch production
+
+      - name: Check out production branch
+        run: git checkout production
+
+      - name: Remove all existing files in production branch
+        run: git rm -r .
+
+      - name: Copy files from dist to production branch
+        run: cp -r dist/* .
 
       - name: Commit and push to production branch
         run: |
-          git add dist -f
+          git add .
           git commit -m "Deploy to production"
           git push origin production
