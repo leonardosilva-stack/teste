@@ -28,6 +28,13 @@ jobs:
           git checkout main
           git pull origin main
 
+      - name: Check if Production Branch Exists
+        run: |
+          if git show-ref --verify --quiet "refs/heads/production"; then
+            git branch -D production  # Excluir a branch se ela existir
+            git push origin :production  # Remover a branch remota
+          fi
+
       - name: Create Production Branch
         run: |
           git checkout -b production
