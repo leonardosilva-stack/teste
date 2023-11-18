@@ -38,3 +38,11 @@ jobs:
           git clean -fdX  # Remove arquivos não rastreados
           git commit -m "Remove existing files in production branch"
           git push origin +production
+
+      - name: Create and Deploy to production branch
+        run: |
+          git checkout production
+          mv dist/* .
+          git add .
+          git commit -m "Deploy to production"
+          git push origin production
