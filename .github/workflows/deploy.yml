@@ -30,15 +30,14 @@ jobs:
 
       - name: Check if Production Branch Exists
         run: |
-          if git show-ref --verify --quiet "refs/heads/production"; then
-            git branch -D production  # Excluir a branch se ela existir
-            git push origin :production  # Remover a branch remota
+          if git rev-parse --verify production; then
+            git branch -D production  # Exclui a branch localmente
           fi
 
-      - name: Create Production Branch
+      - name: Create and Push Production Branch
         run: |
           git checkout -b production
-          git push origin production
+          git push -f origin production  # Força o push da nova branch
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
