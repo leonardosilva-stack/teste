@@ -29,8 +29,8 @@ jobs:
       - name: Create and push production branch
         run: |
           git checkout -b production
-          git rm -r .
-          mv dist/* .
-          git add .
-          git commit -m "Deploy to production"
+          mkdir dist
+          # Add any necessary build steps here if needed
+          git add dist/
+          git commit -m "Create production branch and add dist folder"
           git push origin production
