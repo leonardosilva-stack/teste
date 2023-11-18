@@ -15,23 +15,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
       - name: Set up Git
         run: |
           git config --global user.email "leonardo.rosa.silva@outlook.com.br"
           git config --global user.name "Leonardo Rosa da Silva"
 
-      - name: Deploy to production branch
+      - name: Check if production branch exists
+        run: |
+          if git rev-parse --quiet --verify production; then
+            git branch -D production
+          fi
+
+      - name: Create and push production branch
         run: |
           git checkout -b production
           git rm -r .
