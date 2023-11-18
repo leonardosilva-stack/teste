@@ -24,6 +24,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Set Git identity
+        run: |
+          git config user.email "leonardo.rosa.silva@outlook.com.br"
+          git config user.name "Leonardo Rosa da Silva"
+
       - name: Check if production branch exists locally
         run: git show-ref --verify --quiet "refs/heads/production" || git branch production
 
