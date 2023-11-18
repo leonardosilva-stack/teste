@@ -15,32 +15,41 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
       - name: Set up Git
         run: |
           git config --global user.email "leonardo.rosa.silva@outlook.com.br"
           git config --global user.name "Leonardo Rosa da Silva"
 
-      - name: Check if production branch exists
-        run: |
-          if git rev-parse --quiet --verify production; then
-            git branch -D production
-          fi
-
-      - name: Create and push production branch
-        run: |
+   - name: Deploy to production branch
+      run: |
+   
+        if git show-ref --verify --quiet refs/heads/production; then
+          git checkout production
+          git pull origin production  # Atualizar os arquivos
+        else
           git checkout -b production
-          npm install
-          npm run build
+        fi
 
-          # Move the contents of dist/* to the root
-          mv dist/* .
+        
+        git rm -r .
 
-          # Remove the now empty dist directory
-          rmdir dist
+  
+        mv dist/* .
 
-          # Add all changes
-          git add .
+    
+        git add .
+        git commit -m "Deploy to production"
 
-          # Commit and push
-          git commit -m "Create production branch and add contents of dist folder"
-          git push origin production
+        # Push para a branch "production"
+        git push origin production
