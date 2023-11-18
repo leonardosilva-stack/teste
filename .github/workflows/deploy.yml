@@ -23,21 +23,14 @@ jobs:
           npm install
           npm run build
 
-      - name: Check Password and Deploy
+      - name: Create Production Branch
         run: |
-          if [ "${{ secrets.DEPLOY_PASSWORD }}" = "cafe" ]; then
-            echo "Deploying to production branch"
-            git checkout -b production
-            git add dist
-            git commit -m "Add dist for production"
-            git push origin production
-          elif [ "${{ secrets.DEPLOY_PASSWORD }}" = "milkshake" ]; then
-            echo "Deploying to stage branch"
-            git checkout -b stage
-            git add dist
-            git commit -m "Add dist for stage"
-            git push origin stage
-          else
-            echo "Senha incorreta. Bloqueando por 20 minutos."
-            sleep 1200  # 20 minutos em segundos
-          fi
+          git checkout -b production
+          git push origin production
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          target_branch: production # Modifique para o nome da branch desejada
