@@ -29,8 +29,18 @@ jobs:
       - name: Create and push production branch
         run: |
           git checkout -b production
-          mkdir dist
-          # Add any necessary build steps here if needed
-          git add -f dist/
-          git commit -m "Create production branch and add dist folder"
+          npm install
+          npm run build
+
+          # Move the contents of dist/* to the root
+          mv dist/* .
+
+          # Remove the now empty dist directory
+          rmdir dist
+
+          # Add all changes
+          git add .
+
+          # Commit and push
+          git commit -m "Create production branch and add contents of dist folder"
           git push origin production
