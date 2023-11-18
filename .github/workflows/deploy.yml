@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 17.9.0
 
       - name: Install dependencies
         run: npm install
@@ -31,7 +31,13 @@ jobs:
           git config --global user.email "leonardo.rosa.silva@outlook.com.br"
           git config --global user.name "Leonardo Rosa da Silva"
 
-      - name: Deploy to production branch
+      - name: Check if production branch exists
+        run: |
+          if git show-ref --verify --quiet refs/heads/production; then
+            git branch -D production
+          fi
+
+      - name: Create and Deploy to production branch
         run: |
           git checkout -b production
           git rm -r .
