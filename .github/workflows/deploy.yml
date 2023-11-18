@@ -16,12 +16,17 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 17.9.0
 
       - name: Install and Build
         run: |
           npm install
           npm run build
+
+      - name: Sync with Main Branch
+        run: |
+          git checkout main
+          git pull origin main
 
       - name: Create Production Branch
         run: |
@@ -31,6 +36,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.MY_TOKEN }} # Renomeie sua secret para um nome que não comece com "GITHUB_"
           publish_dir: ./dist
           target_branch: production # Modifique para o nome da branch desejada
