@@ -28,10 +28,14 @@ jobs:
           if [ "${{ secrets.DEPLOY_PASSWORD }}" = "cafe" ]; then
             echo "Deploying to production branch"
             git checkout -b production
+            git add dist
+            git commit -m "Add dist for production"
             git push origin production
           elif [ "${{ secrets.DEPLOY_PASSWORD }}" = "milkshake" ]; then
             echo "Deploying to stage branch"
             git checkout -b stage
+            git add dist
+            git commit -m "Add dist for stage"
             git push origin stage
           else
             echo "Senha incorreta. Bloqueando por 20 minutos."
